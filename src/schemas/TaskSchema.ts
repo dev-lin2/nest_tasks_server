@@ -24,6 +24,9 @@ export class Task {
   @Prop()
   isCompleted: boolean;
 
+  @Prop()
+  dueDate: Date;
+
   @Prop({ default: Date.now })
   createdAt: Date;
 

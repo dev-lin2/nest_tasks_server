@@ -22,7 +22,7 @@ export class AuthService {
 
   async registerUser(
     createUserDto: CreateUserDto,
-  ): Promise<{ message: string; token: string }> {
+  ): Promise<{ message: string; token: string; user: User }> {
     try {
       const existingUser = await this.userModel.findOne({
         username: createUserDto.username,
@@ -39,7 +39,11 @@ export class AuthService {
       });
 
       const token = this.generateToken(newUser);
-      return { message: 'User registered successfully', token };
+      return {
+        message: 'User registered successfully',
+        token,
+        user: newUser,
+      };
     } catch (error) {
       console.error('Error in registerUser:', error);
       if (error instanceof ConflictException) {
@@ -51,7 +55,9 @@ export class AuthService {
     }
   }
 
-  async loginUser(loginUserDto: LoginUserDto): Promise<{ token: string }> {
+  async loginUser(
+    loginUserDto: LoginUserDto,
+  ): Promise<{ token: string; user: User }> {
     const user = await this.userModel.findOne({
       username: loginUserDto.username,
     });
@@ -68,7 +74,7 @@ export class AuthService {
     }
 
     const token = this.generateToken(user);
-    return { token };
+    return { token, user };
   }
 
   private generateToken(user: UserDocument): string {
